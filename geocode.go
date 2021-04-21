@@ -2,6 +2,7 @@ package geolocate
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -19,9 +20,22 @@ type GoogleGeo struct {
 }
 
 // NewGoogleGeo returns a new GoogleGeo instance
-func NewGoogleGeo(apiKey string) *GoogleGeo {
+func NewGoogleGeo(apiKey string, httpProxy string) *GoogleGeo {
+
+	tmpClient := http.Client{Timeout: time.Second * 10}
+	if httpProxy != "" {
+		proxy, err := url.Parse(httpProxy)
+		if err != nil {
+			panic(err)
+		}
+		tr := &http.Transport{
+			Proxy:           http.ProxyURL(proxy),
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+		tmpClient.Transport = tr
+	}
 	return &GoogleGeo{
-		client: &http.Client{Timeout: time.Second * 10},
+		client: &tmpClient,
 		apiKey: apiKey,
 	}
 }
