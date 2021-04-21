@@ -12,7 +12,7 @@ https://developers.google.com/maps/documentation/geolocation/intro
 ```go
 import geo "github.com/martinlindhe/google-geolocate"
 
-client := geo.NewGoogleGeo("api-key")
+client := geo.NewGoogleGeo("api-key", "httpProxyUrl")
 ```
 
 ## Geocode
